@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Game Karir Sepak Bola</title>
+  <style>
+    :root{--bg:#0b1220;--card:#0f1724;--accent:#1f8eed;--muted:#95a0b8}
+    *{box-sizing:border-box;font-family:Inter,ui-sans-serif,system-ui,Segoe UI,Helvetica,Arial}
+    body{margin:0;background:linear-gradient(180deg,#071027 0%, #081422 100%);color:#e6eef8}
+    .wrap{max-width:1100px;margin:24px auto;padding:20px}
+    header{display:flex;align-items:center;gap:16px}
+    h1{margin:0;font-size:18px}
+    .card{background:var(--card);padding:16px;border-radius:12px;box-shadow:0 8px 30px rgba(2,6,23,.6)}
+    .flex{display:flex;gap:12px}
+    .col{flex:1}
+    label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+    select,input{width:100%;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.06);background:rgba(255,255,255,.02);color:inherit}
+    button{background:var(--accent);color:#031024;padding:8px 12px;border:none;border-radius:8px;font-weight:600;cursor:pointer}
+    .small{font-size:13px;color:var(--muted)}
+    .row{display:flex;gap:8px;flex-wrap:wrap}
+    .log{height:140px;overflow:auto;background:rgba(0,0,0,.18);padding:10px;border-radius:8px;font-size:13px}
+    .clubs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:12px}
+    .club{display:flex;align-items:center;gap:8px;padding:8px;background:rgba(255,255,255,.02);border-radius:8px}
+    .logo{width:36px;height:36px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700}
+    .badge{padding:6px 8px;border-radius:6px;background:rgba(255,255,255,.03)}
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:6px;text-align:left;border-bottom:1px dashed rgba(255,255,255,.03)}
+    .center{text-align:center}
+    footer{margin-top:18px;color:var(--muted);font-size:13px}
+    @media (max-width:760px){header{flex-direction:column;align-items:flex-start}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="card" style="padding:12px;display:flex;align-items:center;gap:12px">
+        <div style="width:56px;height:56px;border-radius:10px;background:linear-gradient(135deg,#153b6a,#1f8eed);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px">⚽</div>
+        <div>
+          <h1>Game Karir Sepak Bola</h1>
+          <div class="small">Masukkan nama, benua asal, posisi — lalu mulai karir dari umur 18.</div>
+        </div>
+      </div>
+    </header>
+
+    <main style="margin-top:14px">
+      <div class="flex">
+        <div class="col card">
+          <label for="playerName">Nama Pemain</label>
+          <input id="playerName" placeholder="Ketik namamu..." />
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <div style="flex:1">
+              <label>Benua Asal</label>
+              <select id="continent"></select>
+            </div>
+            <div style="width:150px">
+              <label>Posisi</label>
+              <select id="position"></select>
+            </div>
+          </div>
+
+          <div style="display:flex;gap:8px;margin-top:8px">
+            <button id="startBtn">Mulai Karir</button>
+            <button id="resetBtn" style="background:#334155">Reset</button>
+          </div>
+
+          <hr style="margin:12px 0;border:0;border-top:1px dashed rgba(255,255,255,.04)" />
+
+          <div class="small">Informasi Klub Awal (akademi random):</div>
+          <div id="startingClub" class="club" style="margin-top:8px"></div>
+
+          <div style="margin-top:12px">
+            <div class="small">Log Game</div>
+            <div id="log" class="log"></div>
+          </div>
+        </div>
+
+        <div class="col card">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>
+              <div class="small">Usia</div>
+              <div id="age" style="font-weight:800">-</div>
+            </div>
+            <div>
+              <div class="small">Klub Saat Ini</div>
+              <div id="currentClub" style="font-weight:800">-</div>
+            </div>
+            <div>
+              <div class="small">Posisi</div>
+              <div id="currentPos" style="font-weight:800">-</div>
+            </div>
+            <div>
+              <div class="small">Rating</div>
+              <div id="rating" style="font-weight:800">-</div>
+            </div>
+          </div>
+
+          <hr style="margin:12px 0;border:0;border-top:1px dashed rgba(255,255,255,.04)" />
+
+          <div>
+            <div class="small">Stat Karir (sementara)</div>
+            <table>
+              <tr><th>Stat</th><th class="center">Nilai</th></tr>
+              <tr><td>Match</td><td id="statMatches" class="center">0</td></tr>
+              <tr><td>Goals</td><td id="statGoals" class="center">0</td></tr>
+              <tr><td>Assist</td><td id="statAssists" class="center">0</td></tr>
+              <tr><td>Clean Sheets</td><td id="statCS" class="center">0</td></tr>
+              <tr><td>Kartu Kuning</td><td id="statYC" class="center">0</td></tr>
+              <tr><td>Kartu Merah</td><td id="statRC" class="center">0</td></tr>
+              <tr><td>Piala Liga</td><td id="statTrophies" class="center">0</td></tr>
+              <tr><td>Piala UCL</td><td id="statUCL" class="center">0</td></tr>
+              <tr><td>Piala Dunia</td><td id="statWC" class="center">0</td></tr>
+              <tr><td>Ballon d'Or</td><td id="statBallon" class="center">0</td></tr>
+              <tr><td>Golden Boot</td><td id="statBoots" class="center">0</td></tr>
+            </table>
+          </div>
+
+          <hr style="margin:12px 0;border:0;border-top:1px dashed rgba(255,255,255,.04)" />
+
+          <div style="display:flex;gap:8px">
+            <button id="simSeason">Simulasi Musim</button>
+            <button id="showOffers">Tampilkan Tawaran Musim</button>
+            <button id="endCareer" style="background:#ef4444">Akhiri Karir</button>
+          </div>
+
+          <div id="offersArea" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+      <section style="margin-top:12px" class="card">
+        <h3 style="margin:0 0 8px 0">Detail Klub yang Dicakup (sample)</h3>
+        <div class="clubs-grid" id="clubsList"></div>
+      </section>
+
+      <section style="margin-top:12px" class="card">
+        <h3 style="margin:0 0 8px 0">Ringkasan Karir Akhir</h3>
+        <div id="careerSummary">Belum ada ringkasan — mainkan karir sampai selesai.</div>
+      </section>
+
+    </main>
+
+    <footer class="small center">Made with Rizki Ananda ❤️ — Game Simulasi Sederhana.</footer>
+  </div>
+
+  <script>
+  // --- Data ---
+  const continents = ['ASIA','EROPA','AMERIKA SELATAN','AMERIKA UTARA','AFRIKA','AUSTRALIA']
+  const positions = ['CF','LWF','RWF','CAM','LM','RM','CM','DMF','LB','RB','CB','GK']
+
+  // sample clubs (condensed) with country code (emoji-friendly) and continent tag
+  const clubs = [
+    // Inggris
+    {name:'Liverpool F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Arsenal F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Chelsea F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Manchester City',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Manchester United',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Tottenham Hotspur F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Newcastle United F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Aston Villa F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    {name:'Brighton & Hove Albion F.C.',country:'GB',continent:'EROPA',league:'Liga Inggris'},
+    // Spanyol
+    {name:'Real Madrid C.F.',country:'ES',continent:'EROPA',league:'Liga Spanyol'},
+    {name:'FC Barcelona',country:'ES',continent:'EROPA',league:'Liga Spanyol'},
+    {name:'Atlético de Madrid',country:'ES',continent:'EROPA',league:'Liga Spanyol'},
+    {name:'Sevilla F.C',country:'ES',continent:'EROPA',league:'Liga Spanyol'},
+    // Italia
+    {name:'Juventus F.C.',country:'IT',continent:'EROPA',league:'Liga Italia'},
+    {name:'AC Milan',country:'IT',continent:'EROPA',league:'Liga Italia'},
+    {name:'Inter Milan',country:'IT',continent:'EROPA',league:'Liga Italia'},
+    // Jerman
+    {name:'FC Bayern München',country:'DE',continent:'EROPA',league:'Liga Jerman'},
+    {name:'Borussia Dortmund',country:'DE',continent:'EROPA',league:'Liga Jerman'},
+    // Prancis
+    {name:'Paris Saint-Germain F.C.',country:'FR',continent:'EROPA',league:'Liga Prancis'},
+    // Portugal
+    {name:'SL Benfica',country:'PT',continent:'EROPA',league:'Liga Portugal'},
+    {name:'FC Porto',country:'PT',continent:'EROPA',league:'Liga Portugal'},
+    // Argentina
+    {name:'Boca Juniors',country:'AR',continent:'AMERIKA SELATAN',league:'Liga Argentina'},
+    {name:'River Plate',country:'AR',continent:'AMERIKA SELATAN',league:'Liga Argentina'},
+    // Arab
+    {name:'Al Hilal SFC',country:'SA',continent:'ASIA',league:'Liga Arab'},
+    {name:'Al Nassr FC',country:'SA',continent:'ASIA',league:'Liga Arab'},
+    // Amerika Utara
+    {name:'LA Galaxy',country:'US',continent:'AMERIKA UTARA',league:'Liga Amerika'},
+    {name:'Inter Miami',country:'US',continent:'AMERIKA UTARA',league:'Liga Amerika'},
+    {name:'New York City FC',country:'US',continent:'AMERIKA UTARA',league:'Liga Amerika'},
+    // Australia
+    {name:'Sydney FC',country:'AU',continent:'AUSTRALIA',league:'A-League'},
+    // Afrika sample
+    {name:'Al Ahly',country:'EG',continent:'AFRIKA',league:'Liga Mesir'}
+  ]
+
+  // career state
+  let state = {
+    name:'', age:18, position:'CF', continent:'EROPA', currentClub:null, rating:50,
+    matches:0, goals:0, assists:0, cs:0, yc:0, rc:0,
+    trophies:0, ucl:0, wc:0, ballon:0, boots:0,
+    captain:false, season:1, careerLog:[]
+  }
+
+  // --- Helpers ---
+  function emojiFlag(cc){
+    // cc = 'GB' 'ID' etc. Convert to regional indicator symbols
+    if(!cc) return '🏳️';
+    return [...cc.toUpperCase()].map(c=>String.fromCodePoint(127397 + c.charCodeAt(0))).join('')
+  }
+
+  function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a}
+  function pick(arr){return arr[randInt(0,arr.length-1)]}
+
+  // generate simple club logo (colored square with initials)
+  function makeLogo(name){
+    const initials = name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase()
+    const hue = Math.abs(hashCode(name))%360
+    return {initials,hue}
+  }
+  function hashCode(s){return s.split('').reduce((a,b)=>((a<<5)-a)+b.charCodeAt(0),0)}
+
+  // --- UI init ---
+  const continentSel = document.getElementById('continent')
+  continents.forEach(c=>{const o=document.createElement('option');o.value=c;o.textContent=c;continentSel.appendChild(o)})
+  const posSel = document.getElementById('position')
+  positions.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;posSel.appendChild(o)})
+
+  const clubsList = document.getElementById('clubsList')
+  clubs.forEach(c=>{
+    const el=document.createElement('div');el.className='club'
+    const logo=makeLogo(c.name)
+    el.innerHTML = `<div class="logo" style="background:hsl(${logo.hue} 60% 30%);">${logo.initials}</div><div><div style="font-weight:700">${c.name}</div><div class="small">${emojiFlag(c.country)} ${c.league}</div></div>`
+    clubsList.appendChild(el)
+  })
+
+  // UI elements
+  const startBtn=document.getElementById('startBtn')
+  const resetBtn=document.getElementById('resetBtn')
+  const logEl=document.getElementById('log')
+  const startingClubEl=document.getElementById('startingClub')
+  const ageEl=document.getElementById('age')
+  const currentClubEl=document.getElementById('currentClub')
+  const currentPosEl=document.getElementById('currentPos')
+  const ratingEl=document.getElementById('rating')
+  const offersArea=document.getElementById('offersArea')
+  const simSeasonBtn=document.getElementById('simSeason')
+  const showOffersBtn=document.getElementById('showOffers')
+  const careerSummaryEl=document.getElementById('careerSummary')
+  const statIds = {matches:'statMatches',goals:'statGoals',assists:'statAssists',cs:'statCS',yc:'statYC',rc:'statRC',trophies:'statTrophies',ucl:'statUCL',wc:'statWC',ballon:'statBallon',boots:'statBoots'}
+
+  function log(txt){const p=document.createElement('div');p.innerHTML=txt;logEl.prepend(p)}
+
+  function refreshUI(){
+    ageEl.textContent = state.age
+    currentClubEl.textContent = state.currentClub?state.currentClub.name:'-'
+    currentPosEl.textContent = state.position
+    ratingEl.textContent = state.rating
+    for(const k in statIds){document.getElementById(statIds[k]).textContent = state[k]||0}
+  }
+
+  // Start career
+  startBtn.addEventListener('click',()=>{
+    const name=document.getElementById('playerName').value.trim() || 'Pemain'
+    state.name=name
+    state.position=document.getElementById('position').value
+    state.continent=document.getElementById('continent').value
+    state.age=18
+    state.season=1
+    // starting club = random club from chosen continent
+    const pool = clubs.filter(c=>c.continent===state.continent)
+    state.currentClub = pool.length? pick(pool) : pick(clubs)
+    state.rating = randInt(45,67) + (state.position==='GK'? -2:0)
+    state.matches=state.goals=state.assists=state.cs=state.yc=state.rc=0
+    state.trophies=state.ucl=state.wc=state.ballon=state.boots=0
+    state.careerLog=[]
+    state.captain=false
+    startingClubEl.innerHTML = renderClub(state.currentClub)
+    log(`<b>Selamat datang ${state.name}</b> — memulai karir di akademi ${state.currentClub.name} (${emojiFlag(state.currentClub.country)})`)
+    refreshUI()
+  })
+
+  resetBtn.addEventListener('click',()=>location.reload())
+
+  function renderClub(c){if(!c) return '-';const logo=makeLogo(c.name);return `<div class="logo" style="background:hsl(${logo.hue} 60% 30%);">${logo.initials}</div><div style="margin-left:8px"><div style="font-weight:700">${c.name}</div><div class="small">${emojiFlag(c.country)} ${c.league}</div></div>`}
+
+  // Offer generation
+  function generateOffers(){
+    const offers = []
+    const num = randInt(1,5)
+    for(let i=0;i<num;i++){
+      const c = pick(clubs.filter(x=>x.name!==state.currentClub.name))
+      const fee = Math.round((state.rating + randInt(-15,30)) * randInt(200000,1200000))
+      offers.push({club:c,fee})
+    }
+    return offers
+  }
+
+  showOffersBtn.addEventListener('click',()=>{
+    if(!state.currentClub) return log('Mulai karir dulu...')
+    const offers = generateOffers()
+    renderOffers(offers)
+  })
+
+  function renderOffers(offers){offersArea.innerHTML=''
+    offers.forEach((o,idx)=>{
+      const el=document.createElement('div');el.className='club';el.style.justifyContent='space-between'
+      el.innerHTML = `<div style="display:flex;gap:8px;align-items:center"><div class="logo" style="background:hsl(${makeLogo(o.club.name).hue} 60% 30%);">${makeLogo(o.club.name).initials}</div><div><div style="font-weight:700">${o.club.name}</div><div class="small">${emojiFlag(o.club.country)} ${o.club.league}</div></div></div><div style="display:flex;gap:6px;align-items:center"><div class="small">Fee: $${numberWithCommas(o.fee)}</div><div><button data-idx="${idx}">Terima</button></div></div>`
+      offersArea.appendChild(el)
+      el.querySelector('button').addEventListener('click',()=>acceptOffer(o))
+    })
+    const stayBtn=document.createElement('button');stayBtn.textContent='Tetap di Klub Sekarang';stayBtn.style.marginTop='8px';stayBtn.addEventListener('click',()=>{offersArea.innerHTML='';log('Kamu memilih tetap di klubmu.');})
+    offersArea.appendChild(stayBtn)
+  }
+
+  function acceptOffer(o){
+    log(`Transfer: Kamu pindah dari <b>${state.currentClub.name}</b> ke <b>${o.club.name}</b> dengan fee $${numberWithCommas(o.fee)}`)
+    state.currentClub = o.club
+    // rating adjust
+    state.rating += Math.round((o.fee/1000000) * randInt(1,3))
+    if(state.rating>95) state.rating=95
+    offersArea.innerHTML=''
+    refreshUI()
+  }
+
+  function numberWithCommas(x){return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g,",")}
+
+  // Season simulation (per musim)
+  simSeasonBtn.addEventListener('click',()=>{
+    if(!state.currentClub) return log('Mulai karir dulu...')
+    simulateSeason()
+  })
+
+  function simulateSeason(){
+    log(`<b>Musim ${state.season} — Usia ${state.age}</b> di ${state.currentClub.name}`)
+    // matches per season vary by league; default 34-38
+    const leagueMatches = randInt(30,38)
+    let seasonMatches=0, seasonGoals=0, seasonAssists=0, seasonCS=0, seasonYC=0, seasonRC=0
+    // events: chance of injury, captaincy, call-up
+    const injuryChance = 8 // percent
+    let injuredMatches=0
+    if(randInt(1,100)<=injuryChance){ injuredMatches = randInt(2,12); log(`🚑 Cedera! Kamu absen ${injuredMatches} pertandingan musim ini.`) }
+    // poor form chance
+    const poorForm = randInt(1,100)<=10
+    if(poorForm) log('⚠️ Musim ini performa menurun sedikit.')
+    // captain chance
+    if(randInt(1,100)<=12 && !state.captain){ state.captain=true; log('⭐ Kamu ditunjuk menjadi kapten tim!') }
+    // national team call up
+    if(randInt(1,100)<=10){ log('🌍 Kamu dipanggil ke tim nasional musim ini!'); state.wc += (randInt(1,100)<=2?1:0) }
+
+    // simulate matches
+    for(let m=1;m<=leagueMatches;m++){
+      if(injuredMatches>0){ injuredMatches--; continue }
+      seasonMatches++
+      // base chance to score depends on position
+      const pos=state.position
+      let goalProb = 0.01
+      if(['CF','CAM','LWF','RWF','LM','RM'].includes(pos)) goalProb = 0.15
+      else if(['CM','DMF'].includes(pos)) goalProb = 0.04
+      else if(['LB','RB','CB'].includes(pos)) goalProb = 0.01
+      else if(pos==='GK') goalProb = 0
+
+      // rating modifies probability
+      goalProb *= (state.rating/55)
+      if(poorForm) goalProb *= 0.8
+
+      const scored = randChance(goalProb)
+      if(scored){
+        const g = randInt(1, {'low':1,'mid':2,'high':3}[state.rating>75?'high':state.rating>65?'mid':'low'])
+        seasonGoals += g
+        log(`⚽ Gol! (${g}) di pertandingan ${m}`)
+      }
+      // assist chance
+      const assistProb = Math.min(0.12, (state.rating/120))
+      if(randChance(assistProb)){ seasonAssists++; }
+      // cards
+      if(randChance(0.06)) { seasonYC++; if(randChance(0.05)){ seasonRC++; log('🟥 Kartu merah!') }}
+      // clean sheet if GK
+      if(state.position==='GK' && randChance(0.35)) seasonCS++
+
+      // tiny rating gains/losses
+      state.rating += randInt(-1,2)
+      if(state.rating<30) state.rating=30
+      if(state.rating>95) state.rating=95
+    }
+
+    // trophies: small chance
+    if(randChance(0.12 + state.rating/300)){ state.trophies++; log('🏆 Klubmu memenangkan gelar liga musim ini!') }
+    if(randChance(0.06 + state.rating/400)){ state.ucl++; log('🏆 Klubmu memenangkan Liga Champions musim ini!') }
+    // golden boot chance if many goals
+    if(seasonGoals>20){ state.boots++; log('🥇 Kamu memenangkan Sepatu Emas liga!') }
+    if(seasonGoals>30 && randChance(0.05)) { state.ballon++; log('🏆 Kamu memenangkan Ballon d\'Or!') }
+
+    // update career totals
+    state.matches += seasonMatches
+    state.goals += seasonGoals
+    state.assists += seasonAssists
+    state.cs += seasonCS
+    state.yc += seasonYC
+    state.rc += seasonRC
+
+    // season end events: offers
+    state.season++
+    state.age++
+    state.careerLog.push({season:state.season-1,club:state.currentClub.name,matches:seasonMatches,goals:seasonGoals,assists:seasonAssists,injury:injuredMatches>0})
+
+    log(`Musim selesai: Matches ${seasonMatches}, Goals ${seasonGoals}, Assist ${seasonAssists}`)
+    refreshUI()
+
+    // automatically show offers each season
+    const offers = generateOffers()
+    renderOffers(offers)
+
+    // auto check career end
+    if(state.age>39){ endCareer(); }
+  }
+
+  function randChance(p){return Math.random() < p}
+
+  function endCareer(){
+    log(`<b>Karir Selesai — Usia ${state.age-1}</b>`)
+    // final calculations: appearances, totals
+    const summary = `
+      <div class="small">Nama: <b>${state.name}</b></div>
+      <div class="small">Total Musim: ${state.season-1}</div>
+      <table>
+        <tr><td>Match</td><td>${state.matches}</td></tr>
+        <tr><td>Goals</td><td>${state.goals}</td></tr>
+        <tr><td>Assist</td><td>${state.assists}</td></tr>
+        <tr><td>Clean Sheets</td><td>${state.cs}</td></tr>
+        <tr><td>Kartu Kuning</td><td>${state.yc}</td></tr>
+        <tr><td>Kartu Merah</td><td>${state.rc}</td></tr>
+        <tr><td>Piala Liga</td><td>${state.trophies}</td></tr>
+        <tr><td>Piala UCL</td><td>${state.ucl}</td></tr>
+        <tr><td>Piala Dunia</td><td>${state.wc}</td></tr>
+        <tr><td>Ballon d'Or</td><td>${state.ballon}</td></tr>
+        <tr><td>Golden Boot</td><td>${state.boots}</td></tr>
+      </table>
+    `
+    careerSummaryEl.innerHTML = summary
+    // prevent further play
+    simSeasonBtn.disabled = true
+    showOffersBtn.disabled = true
+    document.getElementById('startBtn').disabled = false
+  }
+
+  document.getElementById('endCareer').addEventListener('click',()=>{
+    endCareer()
+  })
+
+  // Accept offer helper
+  function numberWithCommas2(x){return x.toLocaleString()}
+
+  // small helper to update stat elements are bound via refreshUI
+
+  // initial demo values
+  refreshUI()
+
+  </script>
+</body>
+</html>
